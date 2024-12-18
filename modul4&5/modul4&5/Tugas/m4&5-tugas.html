@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Pemesanan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 20px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    .resume {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Form Pemesanan</h1>
+
+  <form onsubmit="simpanPemesanan(event)">
+    <label for="nama-pemesan">Nama Pemesan:</label>
+    <input type="text" id="nama-pemesan" required><br>
+
+    <label for="jenis-kelamin">Jenis Kelamin:</label>
+    <select id="jenis-kelamin" required>
+      <option value="">--Pilih--</option>
+      <option value="Laki-laki">Laki-Laki</option>
+      <option value="Perempuan">Perempuan</option>
+    </select><br>
+
+    <label for="nomor-identitas">Nomor Identitas:</label>
+    <input type="text" id="nomor-identitas" maxlength="16" onblur="cekIdentitas()" required><br>
+
+    <label for="tipe-kamar">Tipe Kamar:</label>
+    <select id="tipe-kamar" onchange="setHarga()" required>
+      <option value="">--Pilih--</option>
+      <option value="standar">Standar</option>
+      <option value="deluxe">Deluxe</option>
+      <option value="family">Family</option>
+    </select><br>
+
+    <label for="harga">Harga:</label>
+    <input type="text" id="harga" disabled><br>
+
+    <label for="tanggal-pesan">Tanggal Pesan:</label>
+    <input type="date" id="tanggal-pesan" required><br>
+
+    <label for="durasi">Durasi Menginap:</label>
+    <input type="number" id="durasi" min="1" oninput="cekDurasi()" required> Hari<br>
+
+    <label for="breakfast">Termasuk Breakfast:</label>
+    <input type="checkbox" id="breakfast"> Ya<br>
+
+    <label for="total-bayar">Total Bayar:</label>
+    <input type="text" id="total-bayar" disabled><br>
+
+    <button type="submit">Simpan</button>
+    <button type="reset" onclick="resetForm()">Batal</button>
+  </form>
+
+  <div class="resume" id="resume-pemesanan" style="display: none;">
+    <h2>Resume Pemesanan</h2>
+    <p><strong>Nama Pemesan:</strong> <span id="resume-nama"></span></p>
+    <p><strong>Jenis Kelamin:</strong> <span id="resume-kelamin"></span></p>
+    <p><strong>Nomor Identitas:</strong> <span id="resume-identitas"></span></p>
+    <p><strong>Tipe Kamar:</strong> <span id="resume-kamar"></span></p>
+    <p><strong>Harga per Malam:</strong> <span id="resume-harga"></span></p>
+    <p><strong>Tanggal Pesan:</strong> <span id="resume-tanggal"></span></p>
+    <p><strong>Durasi Menginap:</strong> <span id="resume-durasi"></span> Hari</p>
+    <p><strong>Termasuk Breakfast:</strong> <span id="resume-breakfast"></span></p>
+    <p><strong>Total Bayar:</strong> <span id="resume-total"></span></p>
+  </div>
+
+  <script>
+    let hargaPerTipe = {
+      standar: 500000,
+      deluxe: 750000,
+      family: 1000000
+    };
+
+    function cekIdentitas() {
+      const identitas = document.getElementById("nomor-identitas").value;
+      if (identitas.length !== 16 || isNaN(identitas)) {
+        alert("Nomor Identitas harus berupa 16 digit angka!");
+        document.getElementById("nomor-identitas").value = ""; // Kosongkan input jika tidak valid
+      }
+    }
+
+    function setHarga() {
+      const tipe = document.getElementById("tipe-kamar").value;
+      const harga = hargaPerTipe[tipe] || 0;
+      document.getElementById("harga").value = harga.toLocaleString("id-ID");
+    }
+
+    function cekDurasi() {
+      const durasi = document.getElementById("durasi").value;
+      if (durasi <= 0) {
+        alert("Durasi menginap harus lebih dari 0!");
+        document.getElementById("durasi").value = "";
+      }
+    }
+
+    function simpanPemesanan(event) {
+      event.preventDefault();
+
+      // Ambil data dari form
+      const nama = document.getElementById("nama-pemesan").value;
+      const kelamin = document.getElementById("jenis-kelamin").value;
+      const identitas = document.getElementById("nomor-identitas").value;
+      const kamar = document.getElementById("tipe-kamar").value;
+      const harga = parseInt(document.getElementById("harga").value.replace(/\./g, ""));
+      const tanggal = document.getElementById("tanggal-pesan").value;
+      const durasi = parseInt(document.getElementById("durasi").value);
+      const breakfast = document.getElementById("breakfast").checked;
+
+      // Hitung total
+      let total = harga * durasi;
+      if (durasi > 3) total *= 0.9; // Diskon 10% jika lebih dari 3 hari
+      if (breakfast) total += 80000 * durasi; // Tambah biaya breakfast
+
+      document.getElementById("total-bayar").value = total.toLocaleString("id-ID");
+
+      // Tampilkan resume
+      document.getElementById("resume-nama").innerText = nama;
+      document.getElementById("resume-kelamin").innerText = kelamin;
+      document.getElementById("resume-identitas").innerText = identitas;
+      document.getElementById("resume-kamar").innerText = kamar.toUpperCase();
+      document.getElementById("resume-harga").innerText = harga.toLocaleString("id-ID");
+      document.getElementById("resume-tanggal").innerText = tanggal;
+      document.getElementById("resume-durasi").innerText = durasi;
+      document.getElementById("resume-breakfast").innerText = breakfast ? "Ya" : "Tidak";
+      document.getElementById("resume-total").innerText = total.toLocaleString("id-ID");
+
+      document.getElementById("resume-pemesanan").style.display = "block";
+    }
+
+    function resetForm() {
+      document.getElementById("resume-pemesanan").style.display = "none";
+      document.getElementById("total-bayar").value = "";
+    }
+  </script>
+</body>
+</html>

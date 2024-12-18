@@ -1,0 +1,9 @@
+body {
+    background-color: blue;
+}
+
+.teks {
+    color: green;
+    text-align: left;
+    font-family: "Monotype Corsiva", cursive;
+}

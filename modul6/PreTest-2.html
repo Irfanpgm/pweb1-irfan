@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show and Hide Image</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        img {
+            display: none; /* Awalnya gambar disembunyikan */
+            max-width: 300px;
+            height: auto;
+        }
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contoh Menampilkan dan Menyembunyikan Gambar</h1>
+    <button id="show">Tampilkan Gambar</button>
+    <button id="hide">Sembunyikan Gambar</button>
+    <img id="image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHhqMBSHrMGz5K_XVDrPZVV-KgQWzoxAHJnFW7FUaR-gW1iWEyuOEXmjwZGOa_8Bb4q9c&usqp=CAU" alt="Logo_Universitas_Kuningan">
+    <script>
+        $(document).ready(function() {
+            // Menampilkan gambar
+            $('#show').click(function() {
+                $('#image').show(); // Menampilkan gambar
+            });
+    
+            // Menyembunyikan gambar
+            $('#hide').click(function() {
+                $('#image').hide(); // Menyembunyikan gambar
+            });
+        });
+    </script>
+</body>
+</html>
